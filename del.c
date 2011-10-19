@@ -1,32 +1,32 @@
 #include <stdarg.h>
 #include "nargs.c"
 
+ /*
+  * del(...) 
+  *
+  * Will free() and null() all its arguments.
+  * (works with 1 to 16 arguments)
+  *
+  * E.g. del(a,b,c) will have the same effect as:
+  *     free(a); free(b); free(c);
+  *     a = b = c = NULL;
+  */
+#define del(...) do { _del(NARGS(__VA_ARGS__), __VA_ARGS__); null(__VA_ARGS__); } while(0)
 
-#define del(s) do {free(s); s=NULL;} while(0)
-
-#define delete(...) _delete(NARGS(__VA_ARGS__), __VA_ARGS__)
-
-#define null0(...) do {GETARG(1,__VA_ARGS__)=NULL; GETARG(2,__VA_ARGS__)=NULL;} while(0)
-
-#define null1(...) do {                                     \
-    for(int _i=1; _i<= NARGS(__VA_ARGS__); _i++) {         \
-        GETARG(i,__VA_ARGS__) = NULL;                      \
-    }                                                      \
-} while(0)
-
-#define null2(...) do {                                               \
-    if (NARGS(__VA_ARGS__) >= 1) GETARG(1, __VA_ARGS__) = NULL;      \
-    if (NARGS(__VA_ARGS__) >= 2) GETARG(2, __VA_ARGS__) = NULL;      \
-    if (NARGS(__VA_ARGS__) >= 3) GETARG(3, __VA_ARGS__) = NULL;      \
-    if (NARGS(__VA_ARGS__) >= 4) GETARG(4, __VA_ARGS__) = NULL;      \
-    if (NARGS(__VA_ARGS__) >= 5) GETARG(5, __VA_ARGS__) = NULL;      \
-    if (NARGS(__VA_ARGS__) >= 6) GETARG(6, __VA_ARGS__) = NULL;      \
-    if (NARGS(__VA_ARGS__) >= 7) GETARG(7, __VA_ARGS__) = NULL;      \
-    if (NARGS(__VA_ARGS__) >= 8) GETARG(8, __VA_ARGS__) = NULL;      \
-    if (NARGS(__VA_ARGS__) >= 9) GETARG(9, __VA_ARGS__) = NULL;      \
-} while(0)
-
+ /*
+  * null(...) 
+  *
+  * Will assign NULL to all its arguments.
+  * (works with 1 to 16 arguments)
+  *
+  * E.g. null(a,b,c) will have the same effect as:
+  *     a = b = c = NULL;
+  */
 #define null(...) NULL_N(NARGS(__VA_ARGS__), __VA_ARGS__)
+
+ /*
+  * Crap that was necessary to implement the above macros
+  */
 
 #define TOKENPASTE2(x, y) x ## y
 #define TOKENPASTE(x, y) TOKENPASTE2(x, y)
@@ -57,7 +57,7 @@
 #define NULL_16(_1,_2,_3,_4,_5,_6,_7,_8,_9,_10,_11,_12,_13,_14,_15,_16) \
            do { _1=_2=_3=_4=_5=_6=_7=_8=_9=_10=_11=_12=_13=_14=_15=_16=NULL; } while(0)
                  
-void _delete(int nargs, ...) {
+void _del(int nargs, ...) {
     void* p;
     va_list al;
     va_start(al, nargs); 
