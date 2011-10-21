@@ -1,5 +1,9 @@
-
-
+ /*
+  * del.h -- easy deleting/deallocating/freeing of memory.
+  *
+  * del(...) -- free and set to NULL all arguments.
+  * null(...) -- set to NULL all arguments.
+  */
 
 #ifndef DEL_H
 #define DEL_H
@@ -17,7 +21,9 @@
   *     free(a); free(b); free(c);
   *     a = b = c = NULL;
   */
-#define del(...) do { _del(arg_count(__VA_ARGS__), __VA_ARGS__); null(__VA_ARGS__); } while(0)
+#define del(...) \
+    do { _del(arg_count(__VA_ARGS__), __VA_ARGS__); \
+         null(__VA_ARGS__); } while(0)
 
  /*
   * null(...) 

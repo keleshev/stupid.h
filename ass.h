@@ -2,7 +2,7 @@
   * ass.h -- assert library
   *
   * ass(cond, ...) -- assert true.
-  * ass_eq(a, b, ...) -- assert equal.
+  * ass_eq(a, b, ...) -- assert equal (GCC-specific).
   */
 
 #ifndef ASS_H
@@ -62,18 +62,22 @@
   *     //     ass_eq(nwings, 2, "Number of wings") 
   *     //     -2147483648 != 2
   */
-
-#define ass_eq(...)                                          \
-    ( (arg_get(1, __VA_ARGS__) == arg_get(2, __VA_ARGS__)) ? \
-      ((void)0) :                                            \
-      (printf("%s:%i: %s(): assertion failed: \n"            \
-              "    ass_eq(" #__VA_ARGS__ ")\n    ",          \
-              __FILE__, __LINE__, __func__),                 \
-       _any_print(v1),                                       \
-       printf(" != "),                                       \
-       _any_print(v2),                                       \
-       printf("\n"),                                         \
-       ((void)0)) )
+#define ass_eq(...)                                                 \
+    do {                                                            \
+        if (type_eq_str(arg_get(1, __VA_ARGS__)) &&                 \
+            strcmp(arg_get(1, __VA_ARGS__),                         \
+                     arg_get(2, __VA_ARGS__))  ||                   \
+            !type_eq_str(arg_get(1, __VA_ARGS__)) &&                \
+            (arg_get(1, __VA_ARGS__) != arg_get(2, __VA_ARGS__))) { \
+            printf("%s:%i: %s(): assertion failed: \n"              \
+                   "    ass_eq(" #__VA_ARGS__ ")\n    ",            \
+                   __FILE__, __LINE__, __func__);                   \
+            any_print(arg_get(1, __VA_ARGS__));                     \
+            printf(" != ");                                         \
+            any_print(arg_get(2, __VA_ARGS__));                     \
+            printf("\n");                                           \
+        }                                                           \
+    } while (0)     
 
 
 #endif // guard

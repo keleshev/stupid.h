@@ -92,6 +92,8 @@ char* str_sub_dest(char* dest, char* s, signed begin, signed end) {
     return dest;
 }
 
+signed _to_unsigned(signed x) { return (x < 0 ? 0 : x); }
+
 char* str_sub_new(char* s, signed begin, signed end) {
     return str_sub_dest(
             malloc(_to_unsigned(end - begin) + 1), s, begin, end);
@@ -139,9 +141,6 @@ char* str_slice_new(char* s, signed b, signed e) {
     str_slice_dest( \
      alloca(_to_unsigned(e - b + strlen(s)*((b < 0) - (e < 0))) + 1), s, b, e)
 
-unsigned _to_unsigned(signed x) {
-    return (x < 0 ? 0 : x);
-}
 
 
 
@@ -209,12 +208,26 @@ bool str_eq(char* s1, char* s2) {
     return (strcmp(s1, s2) == 0);
 }
 
-bool str_is_alpha(char* s) {
-    unsigned i = 0;
-    while(s[i] != '\0') if(!isalpha(s[i++])) return false;
-    return true;
+#define _code_gen_ctypes(token) \
+bool str_is_##token(char* s) { \
+    unsigned i = 0; \
+    while(s[i] != '\0') if(!is##token(s[i++])) return false; \
+    return true; \
 }
-
+    
+_code_gen_ctypes(alnum)  // str_is_alnum(s)
+_code_gen_ctypes(alpha)  // str_is_alpha(s)
+_code_gen_ctypes(ascii)  // str_is_ascii(s)
+_code_gen_ctypes(blank)  // str_is_blank(s)
+_code_gen_ctypes(cntrl)  // str_is_cntrl(s)
+_code_gen_ctypes(digit)  // str_is_digit(s)
+_code_gen_ctypes(graph)  // str_is_graph(s)
+_code_gen_ctypes(lower)  // str_is_lower(s)
+_code_gen_ctypes(print)  // str_is_print(s)
+_code_gen_ctypes(punct)  // str_is_punct(s)
+_code_gen_ctypes(space)  // str_is_space(s)
+_code_gen_ctypes(upper)  // str_is_upper(s)
+_code_gen_ctypes(xdigit)  // str_is_xdigit(s)
 
 
 
@@ -227,7 +240,7 @@ bool str_is_alpha(char* s) {
 
 
 /* Python strings methods:
-'capitalize', 'center', 'count', 'decode', 'encode', 'endswith', 'expandtabs', 'find', 'format', 'index', 'isalnum', 'isalpha', 'isdigit', 'islower', 'isspace', 'istitle', 'isupper', 'join', 'ljust', 'lower', 'lstrip', 'partition', 'replace', 'rfind', 'rindex', 'rjust', 'rpartition', 'rsplit', 'rstrip', 'split', 'splitlines', 'startswith', 'strip', 'swapcase', 'title', 'translate', 'upper', 'zfill'
+'capitalize', 'center', 'count', 'decode', 'encode', 'endswith', 'expandtabs', 'find', 'format', 'index', ''istitle', ''join', 'ljust', 'lower', 'lstrip', 'partition', 'replace', 'rfind', 'rindex', 'rjust', 'rpartition', 'rsplit', 'rstrip', 'split', 'splitlines', 'startswith', 'strip', 'swapcase', 'title', 'translate', 'upper', 'zfill'
 */
 
 
