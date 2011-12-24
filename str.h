@@ -141,8 +141,26 @@ char* str_slice_new(char* s, signed b, signed e) {
     str_slice_dest( \
      alloca(_to_unsigned(e - b + strlen(s)*((b < 0) - (e < 0))) + 1), s, b, e)
 
+ /*
+  * working with files
+  */
 
+char* str_from_file_new(char* filename) {
+    FILE* f = fopen(filename, "rb");
+    if(f == NULL) printf("\nCan't open %s!\n", filename);
+    
+    // quick & dirty filesize calculation
+    fseek(f, 0, SEEK_END);
+    size_t filesize = ftell(f);      
+    fseek(f, 0, SEEK_SET);
 
+    char* buffer = malloc(filesize + 1);
+
+    fread(buffer, 1, filesize, f);
+    buffer[filesize] = '\0';
+    if(fclose(f) != 0) printf("\nCan't close %s!\n", filename);
+    return buffer;
+}
 
 
  /*

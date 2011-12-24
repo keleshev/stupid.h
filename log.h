@@ -15,7 +15,7 @@
 #ifndef LOG_H
 #define LOG_H
 
-#include "any.h"
+#include "any.h" // any_print
 
 // GCC-specific
 #define log(value) \

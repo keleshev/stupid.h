@@ -72,4 +72,8 @@ int main() {
     // str_is_alpha()
     ass(str_is_alpha("abcdEFG"));
     ass(! str_is_alpha("!@#$@#$"));
+
+    // str_from_file_new()
+    char* str_from_file_new_ = str_from_file_new("file.test");
+    ass_eq(str_from_file_new_, "file.test:test\n");
 }

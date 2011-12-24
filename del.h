@@ -9,7 +9,7 @@
 #define DEL_H
 
 #include <stdarg.h>
-#include "arg.h"
+#include "arg.h"  // arg_count() 
 
  /*
   * del(...) 
@@ -70,7 +70,8 @@
             do { _1=_2=_3=_4=_5=_6=_7=_8=_9=_10=_11=_12=_13=_14=_15=_16=NULL; } while(0)
   
 void _del(int nargs, ...) {
-    va_start(va_list vl, nargs); 
+    va_list vl;
+    va_start(vl, nargs); 
     for (unsigned i = 1; i <= nargs; i++)
         free(va_arg(vl, void*));
     va_end(vl);
